@@ -5,7 +5,7 @@ Using defined step and architechure from gitHub: https://github.com/labs42io/web
 Tests are written in an ordinary language that bridges the gap between business and technical people.
 The docker selenium simplifies the setup and avoids any local installation of browser specific dependencies.
 Supported CI/CD:
- - [v] Gitlab
+ - [x] Gitlab
  - [ ] Jenkins (Update in the future)
  - [ ] Github (Update in the furture)
  - [ ] CircleCI (Update in the future)
@@ -14,7 +14,6 @@ Supported CI/CD:
 ## Short guide to GitlabCI
 
 Make a folder feature in your testing project
-Viết file kịch bản(Feature) theo yêu cầu, dựa trên các cú pháp Given, When, Then được định nghĩa sẵn
 Write Feature file based on Given, When, Then syntax 
 Then test run
 ## Quick start
