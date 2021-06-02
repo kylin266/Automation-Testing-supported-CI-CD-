@@ -1,0 +1,65 @@
+stages:
+  - build
+  - test
+
+include:
+- project: 'ql6625/gitlab-ci-templates'
+  file: '/templates/v1/.gitlab-ci-template.yml'
+  ref: develop
+
+build:
+  extends: .build
+  stage: build
+  environment: stable
+  variables:
+    CI_CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_ENVIRONMENT_NAME
+  only:
+    - master
+
+test:
+  image: $CI_REGISTRY_IMAGE:stable
+  variables:
+    WEBDRIVER_TYPE: browserless
+    WEBDRIVER_PROTOCOL: https
+    WEBDRIVER_HOST: browserless.ql6625.fr
+    WEBDRIVER_PORT: 443
+    BROWSERLESS_TOKEN: 'some-token'
+  script:
+    - cd /usr/app
+    - ln -s $CI_PROJECT_DIR/src/new_features ./src/new_features
+    - ./run.sh
+  only:
+    - test
+  artifacts:
+    paths:
+      - /usr/app/report
+    expire_in: 1 week
+    when: always
+
+# docker-build-n-test:
+#   # Official docker image.
+  
+#   image: docker
+#   stage: build
+#   services:
+#     - docker:18.09.7-dind 
+#   variables:
+#     DOCKER_HOST: tcp://docker:2375/
+#   before_script:
+#     - cat docker-compose.ci.yml
+#     - apk --no-cache add docker-compose     
+#     - docker info
+#     - docker-compose version
+#   script:
+#     - docker-compose -f docker-compose.ci.yml pull
+#     - docker-compose -f docker-compose.ci.yml build
+#     - docker-compose -f docker-compose.ci.yml up --abort-on-container-exit --exit-code-from node
+#   artifacts:
+#     paths:
+#       - ./report
+#     expire_in: 1 week
+#     when: always
+#   only:
+#     changes:
+#       - src/new_features/*
+

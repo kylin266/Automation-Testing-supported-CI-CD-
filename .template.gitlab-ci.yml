@@ -1,0 +1,30 @@
+stages:
+  - smoke-test
+  - test 
+
+first-test:
+    stage: smoke-test
+    image: debian:buster-slim
+    script:
+        - apt update && apt upgrade -y
+        - apt install curl -y
+        - sleep 15
+        - curl ""
+
+bdd-test:
+    stage:  test
+    image: vnkylin266/general-bdd-testing:1.0.1
+    before_script:
+        - node --version
+        - pwd
+    script:
+        - cd /usr/app
+        - node ./node_modules/.bin/wdio --spec $CI_PROJECT_DIR/features/**/*.feature || EXIT_CODE=$?
+        - npm run report
+        - cp -avr /usr/app/report $CI_PROJECT_DIR/reports
+        - exit $EXIT_CODE
+    artifacts:
+        paths:
+         - $CI_PROJECT_DIR/reports
+        expire_in: 1 week
+        when: always
